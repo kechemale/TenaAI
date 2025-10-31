@@ -47,10 +47,10 @@ query = "How is the passing score (cut-off point) determined for the EHPLE medic
 summary = rag.search_and_summarize(query)
 
 print(summary)
-
+```
 Summary:
 The passing score (cut-off point) for the EHPLE medicine exam is determined using the **Modified-Angoff method**. This process involves a panel of subject matter experts who evaluate each test question and estimate the probability that a minimally competent examinee would answer it correctly. The average of these predictions across all test items establishes the recommended cut-off point, which represents the minimum level of knowledge and skill required to pass the exam.
-```
+
 ---
 
 ## 🔍 Features
@@ -91,6 +91,7 @@ See the [LICENSE](LICENSE) file for details.
 
 Would you like me to add an **“Architecture Overview”** section (with a short RAG pipeline diagram using Mermaid) for better documentation?
 ```
+
 
 
 
