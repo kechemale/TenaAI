@@ -53,7 +53,6 @@ The passing score (cut-off point) for the EHPLE medicine exam is determined usin
 
 ```
 query = "How can postpartum hemorrhage due to uterine inversion be recognized and managed?"
-```
 Summary: 
 Based on the context provided, postpartum hemorrhage due to uterine inversion can be recognized and managed as follows:
 
@@ -68,6 +67,8 @@ Based on the context provided, postpartum hemorrhage due to uterine inversion ca
 - Surgical intervention if manual replacement fails
 
 The condition typically occurs during or after placental delivery and risk factors include mismanagement of the third stage of labor, adherent placenta, and short umbilical cord.
+
+```
 
 ---
 
@@ -95,6 +96,7 @@ This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
 
 ```
+
 
 
 
