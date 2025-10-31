@@ -1,5 +1,4 @@
 
-````markdown
 # 🩺 TenaAI: RAG Healthcare Knowledge System
 
 **TenaAI** is a **Retrieval-Augmented Generation (RAG)** system designed to empower **healthcare professionals in Ethiopia** with intelligent search and summarization capabilities.  
@@ -14,7 +13,7 @@ It retrieves relevant information from official healthcare guidelines and docume
 git clone https://github.com/kechemale/TenaAI.git
 cd TenaAI
 pip install -r requirements.txt
-````
+
 
 ---
 
@@ -90,6 +89,7 @@ See the [LICENSE](LICENSE) file for details.
 
 Would you like me to add an **“Architecture Overview”** section (with a short RAG pipeline diagram using Mermaid) for better documentation?
 ```
+
 
 
 
