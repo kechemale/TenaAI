@@ -19,7 +19,7 @@ class RAGSearch:
             self.vectorstore.load()
         
         # Initialize DeepSeek client
-        deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "sk-6d940aacef3f4a86ba5392943993c249")
+        deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "#")
         if not deepseek_api_key:
             raise ValueError("DEEPSEEK_API_KEY environment variable is required")
         
@@ -62,4 +62,5 @@ if __name__ == "__main__":
     rag_search = RAGSearch()
     query = "What are the registration requirements for new and repeat candidates in the EHPLE system?"
     summary = rag_search.search_and_summarize(query, top_k=3)
+
     print("Summary:", summary)
