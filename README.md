@@ -1,4 +1,4 @@
-````markdown
+
 # 🩺 TenaAI: RAG Healthcare Knowledge System
 
 **TenaAI** is a **Retrieval-Augmented Generation (RAG)** system designed to empower **healthcare professionals in Ethiopia** with intelligent search and summarization capabilities.  
@@ -105,6 +105,7 @@ query = "How can postpartum hemorrhage due to uterine inversion be recognized an
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
+
 
 
 
