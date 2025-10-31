@@ -62,9 +62,6 @@ print(summary)
 
 ```python
 query = "How can postpartum hemorrhage due to uterine inversion be recognized and managed?"
-summary = rag.search_and_summarize(query)
-
-print(summary)
 ```
 
 **Summary Example:**
@@ -108,6 +105,7 @@ print(summary)
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
+
 
 
 
