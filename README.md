@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ---
 
-### ⚙️ Setup
+### Setup
 
 1. **Get an API Key**
 
@@ -69,17 +69,17 @@ print(summary)
 
 **Summary Example:**
 
-**Recognition:**
+> **Recognition:**
 
-* Signs of postpartum hemorrhage: vaginal bleeding (>500ml after vaginal delivery), tachycardia, hypotension, and pale conjunctivae
-* Key diagnostic finding: a pinkish mass protruding from the cervix with an absent palpable uterus on abdominal examination
+> * Signs of postpartum hemorrhage: vaginal bleeding (>500ml after vaginal delivery), tachycardia, hypotension, and pale conjunctivae
+> * Key diagnostic finding: a pinkish mass protruding from the cervix with an absent palpable uterus on abdominal examination
 
-**Management:**
+> **Management:**
 
-* Immediate manual replacement of the inverted uterus
-* Administration of uterotonics to control bleeding
-* Fluid resuscitation and hemodynamic support for shock
-* Surgical intervention if manual replacement fails
+> * Immediate manual replacement of the inverted uterus
+> * Administration of uterotonics to control bleeding
+> * Fluid resuscitation and hemodynamic support for shock
+> * Surgical intervention if manual replacement fails
 
 > The condition typically occurs during or after placental delivery.
 > Risk factors include mismanagement of the third stage of labor, adherent placenta, and short umbilical cord.
@@ -108,6 +108,7 @@ print(summary)
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
+
 
 
 
