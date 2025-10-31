@@ -1,6 +1,3 @@
-Here’s the **ready-to-copy Markdown version** of your improved `README.md` — formatted perfectly for GitHub 👇
-
----
 
 ````markdown
 # 🩺 TenaAI: RAG Healthcare Knowledge System
@@ -93,6 +90,7 @@ See the [LICENSE](LICENSE) file for details.
 
 Would you like me to add an **“Architecture Overview”** section (with a short RAG pipeline diagram using Mermaid) for better documentation?
 ```
+
 
 
 
