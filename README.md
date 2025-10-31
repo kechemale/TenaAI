@@ -51,6 +51,24 @@ print(summary)
 Summary:
 The passing score (cut-off point) for the EHPLE medicine exam is determined using the **Modified-Angoff method**. This process involves a panel of subject matter experts who evaluate each test question and estimate the probability that a minimally competent examinee would answer it correctly. The average of these predictions across all test items establishes the recommended cut-off point, which represents the minimum level of knowledge and skill required to pass the exam.
 
+```
+query = "How can postpartum hemorrhage due to uterine inversion be recognized and managed?"
+```
+Summary: 
+Based on the context provided, postpartum hemorrhage due to uterine inversion can be recognized and managed as follows:
+
+**Recognition:**
+- Signs of postpartum hemorrhage: vaginal bleeding (>500ml after vaginal delivery), tachycardia, hypotension, and pale conjunctivae
+- Key diagnostic finding: a pinkish mass protruding from the cervix with an absent palpable uterus on abdominal examination
+
+**Management:**
+- Immediate manual replacement of the inverted uterus
+- Administration of uterotonics to control bleeding
+- Fluid resuscitation and hemodynamic support for shock
+- Surgical intervention if manual replacement fails
+
+The condition typically occurs during or after placental delivery and risk factors include mismanagement of the third stage of labor, adherent placenta, and short umbilical cord.
+
 ---
 
 ##  Features
@@ -77,6 +95,7 @@ This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
 
 ```
+
 
 
 
