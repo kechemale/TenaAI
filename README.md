@@ -5,7 +5,7 @@ A Retrieval-Augmented Generation system for intelligent search and summarization
 ## Quick Start
 
 ### Installation
-```bash
+bash
 git clone https://github.com/kechemale/TenaAI.git
 cd TenaAI
 pip install -r requirements.txt
@@ -37,3 +37,4 @@ AI Summarization - DeepSeek LLM for accurate summaries
 Healthcare Focus - Optimized for medical documents
 
 Formats - PDF, You can also extend to Word, Text, CSV support
+
