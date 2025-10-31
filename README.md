@@ -6,9 +6,9 @@ It retrieves relevant information from official healthcare guidelines and docume
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### 🧩 Installation
+###  Installation
 ```bash
 git clone https://github.com/kechemale/TenaAI.git
 cd TenaAI
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 ---
 
-### ⚙️ Setup
+###  Setup
 
 1. **Get an API Key**
 
@@ -36,7 +36,7 @@ pip install -r requirements.txt
 
 ---
 
-### 💡 Usage Example
+###  Usage Example
 
 ```python
 from rag_system import RAGSearch
@@ -53,7 +53,7 @@ The passing score (cut-off point) for the EHPLE medicine exam is determined usin
 
 ---
 
-## 🔍 Features
+##  Features
 
 * **Smart Document Search** – FAISS-powered vector database for fast and relevant retrieval
 * **AI Summarization** – DeepSeek (or other LLMs) provides concise, accurate summaries
@@ -62,34 +62,20 @@ The passing score (cut-off point) for the EHPLE medicine exam is determined usin
 
 ---
 
-## 🧠 Use Cases
+##  Use Cases
 
 * Quick access to FMOH and clinical guidelines
 * Decision support for medical practitioners
 * Policy and research reference for healthcare administrators
 * Integration into healthcare knowledge portals
 
----
 
-## 🤝 Contributing
 
-Contributions are welcome!
-Feel free to open issues or submit pull requests to enhance functionality, add new LLM integrations, or improve document processing.
-
----
-
-## 📜 License
+## License
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
 
-```
-
----
-
-✅ Just copy the entire block above into your `README.md` file — it’s already Markdown-formatted for GitHub.  
-
-Would you like me to add an **“Architecture Overview”** section (with a short RAG pipeline diagram using Mermaid) for better documentation?
 ```
 
 
