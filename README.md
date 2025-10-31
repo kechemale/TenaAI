@@ -1,4 +1,6 @@
+---
 
+````markdown
 # 🩺 TenaAI: RAG Healthcare Knowledge System
 
 **TenaAI** is a **Retrieval-Augmented Generation (RAG)** system designed to empower **healthcare professionals in Ethiopia** with intelligent search and summarization capabilities.  
@@ -9,15 +11,16 @@ It retrieves relevant information from official healthcare guidelines and docume
 ## Quick Start
 
 ###  Installation
+
 ```bash
 git clone https://github.com/kechemale/TenaAI.git
 cd TenaAI
 pip install -r requirements.txt
-
+````
 
 ---
 
-###  Setup
+### ⚙️ Setup
 
 1. **Get an API Key**
 
@@ -36,7 +39,7 @@ pip install -r requirements.txt
 
 ---
 
-###  Usage Example
+##  Usage Example
 
 ```python
 from rag_system import RAGSearch
@@ -48,27 +51,40 @@ summary = rag.search_and_summarize(query)
 
 print(summary)
 ```
-Summary:
-The passing score (cut-off point) for the EHPLE medicine exam is determined using the **Modified-Angoff method**. This process involves a panel of subject matter experts who evaluate each test question and estimate the probability that a minimally competent examinee would answer it correctly. The average of these predictions across all test items establishes the recommended cut-off point, which represents the minimum level of knowledge and skill required to pass the exam.
 
-```
+**Summary Example:**
+
+> The passing score (cut-off point) for the EHPLE medicine exam is determined using the Modified-Angoff method.
+> This process involves a panel of subject matter experts who evaluate each test question and estimate the probability that a minimally competent examinee would answer it correctly.
+> The average of these predictions across all test items establishes the recommended cut-off point, which represents the minimum level of knowledge and skill required to pass the exam.
+
+---
+
+###  Example 2
+
+```python
 query = "How can postpartum hemorrhage due to uterine inversion be recognized and managed?"
-Summary: 
-Based on the context provided, postpartum hemorrhage due to uterine inversion can be recognized and managed as follows:
+summary = rag.search_and_summarize(query)
+
+print(summary)
+```
+
+**Summary Example:**
 
 **Recognition:**
-- Signs of postpartum hemorrhage: vaginal bleeding (>500ml after vaginal delivery), tachycardia, hypotension, and pale conjunctivae
-- Key diagnostic finding: a pinkish mass protruding from the cervix with an absent palpable uterus on abdominal examination
+
+* Signs of postpartum hemorrhage: vaginal bleeding (>500ml after vaginal delivery), tachycardia, hypotension, and pale conjunctivae
+* Key diagnostic finding: a pinkish mass protruding from the cervix with an absent palpable uterus on abdominal examination
 
 **Management:**
-- Immediate manual replacement of the inverted uterus
-- Administration of uterotonics to control bleeding
-- Fluid resuscitation and hemodynamic support for shock
-- Surgical intervention if manual replacement fails
 
-The condition typically occurs during or after placental delivery and risk factors include mismanagement of the third stage of labor, adherent placenta, and short umbilical cord.
+* Immediate manual replacement of the inverted uterus
+* Administration of uterotonics to control bleeding
+* Fluid resuscitation and hemodynamic support for shock
+* Surgical intervention if manual replacement fails
 
-```
+> The condition typically occurs during or after placental delivery.
+> Risk factors include mismanagement of the third stage of labor, adherent placenta, and short umbilical cord.
 
 ---
 
@@ -81,27 +97,19 @@ The condition typically occurs during or after placental delivery and risk facto
 
 ---
 
-##  Use Cases
+## Use Cases
 
 * Quick access to FMOH and clinical guidelines
 * Decision support for medical practitioners
 * Policy and research reference for healthcare administrators
 * Integration into healthcare knowledge portals
 
+---
 
-
-## License
+##  License
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
 
 ```
-
-
-
-
-
-
-
-
 
