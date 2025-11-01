@@ -50,9 +50,6 @@ def format_clinical_response(text: str) -> str:
         if ":" in line and len(line.split(":")[0].split()) < 5:
             header, rest = line.split(":", 1)
             formatted += f"**{header.strip()}:** {rest.strip()}\n\n"
-        else:
-            # Add as bullet point
-            formatted += f"- {line}\n"
     return formatted
 
 # --- Display Chat History ---
@@ -95,3 +92,4 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 # --- Footer ---
 st.markdown("---")
 st.caption("TenaAI © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+
