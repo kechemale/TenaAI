@@ -119,24 +119,31 @@ def search_and_summarize(self, query: str, top_k: int = 5) -> str:
     results = self.vectorstore.query(query, top_k=top_k)
     texts = [r["metadata"].get("text", "") for r in results if r["metadata"]]
     context = "\n\n".join(texts)
-    
-    if not context:
-        return "⚠️ No relevant documents found. I cannot answer this question without the guidelines."
 
-    prompt = f"""You are a healthcare assistant specialized in Ethiopian medical guidelines.
+    # If no relevant context found
+    if not context.strip():
+        return (
+            "⚠️ No relevant Ethiopian healthcare document found in the database for your query.\n\n"
+            "The assistant is restricted to answer **only** from the official Ethiopian clinical guidelines, "
+            "and cannot generate answers from general knowledge. Please rephrase or try another clinical topic."
+        )
 
-You **must answer ONLY using the context provided below**. 
-If the answer is not contained in the context, respond with:
-'I’m sorry, I cannot answer this question based on the available guidelines.'
+    # Construct the RAG-grounded prompt
+    prompt = f"""
+You are a healthcare assistant specialized in Ethiopian clinical and public health guidelines.
+Answer the question **only** using the provided context below. 
+If the information is not clearly available, explicitly say so — do not generate or guess an answer.
 
 Question:
 {query}
 
-Context:
+Context (official Ethiopian healthcare documents):
 {context}
 
-Provide a clear, concise, and medically accurate summary directly addressing the query.
-Do not provide any information not included in the context.
+Your response should:
+- Be medically accurate and concise.
+- Use Ethiopian healthcare terminology when possible.
+- If unclear or missing, say: "The Ethiopian clinical guideline does not specify this information."
 """
 
     try:
@@ -146,18 +153,19 @@ Do not provide any information not included in the context.
                 {
                     "role": "system",
                     "content": (
-                        "You are a strict assistant that only summarizes Ethiopian clinical guidelines. "
-                        "Never provide answers from your own knowledge. "
-                        "If the context does not contain the answer, say you cannot answer."
-                    )
+                        "You are a cautious healthcare assistant that responds strictly based on Ethiopian "
+                        "clinical guidelines and NEVER uses general knowledge or external data. "
+                        "If context is missing or incomplete, clearly state that."
+                    ),
                 },
                 {"role": "user", "content": prompt},
             ],
-            temperature=0.1,  # deterministic
+            temperature=0.1,  # deterministic output
         )
-        return response.choices[0].message.content
+        return response.choices[0].message.content.strip()
     except Exception as e:
         return f"❌ Error generating summary: {str(e)}"
+
 
 
 # Example local usage
@@ -166,4 +174,5 @@ if __name__ == "__main__":
     query = "What are the registration requirements for new and repeat candidates in the EHPLE system?"
     summary = rag_search.search_and_summarize(query, top_k=3)
     print("Summary:", summary)
+
 
