@@ -140,7 +140,7 @@ def init_rag(api_key):
     return rag
 
 DEEPSEEK_API_KEY = st.secrets["My_API_Key"]
-rag_search = init_rag(DEEPSEEEK_API_KEY)
+rag_search = init_rag(DEEPSEEK_API_KEY)
 
 # --- Initialize Session State ---
 if "messages" not in st.session_state:
@@ -233,4 +233,5 @@ with st.sidebar:
 # --- Footer ---
 st.markdown("---")
 st.caption("TenaAI © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+
 
