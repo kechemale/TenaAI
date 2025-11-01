@@ -40,73 +40,53 @@ def format_clinical_response(text: str) -> str:
     Formats medical text with proper structure for natural readability.
     Creates clear sections with headers and organized content.
     """
-    # Remove excessive whitespace
-    text = re.sub(r'\n{3,}', '\n\n', text.strip())
+    # Remove excessive whitespace and normalize
+    text = text.strip()
+    text = re.sub(r'\n{3,}', '\n\n', text)
     
-    # Remove leading bullets that might already exist
-    text = re.sub(r'^\s*[•\-\*]\s+', '', text, flags=re.MULTILINE)
+    # Replace "Based on..." introduction
+    text = re.sub(
+        r'Based on the Ethiopian clinical guidelines provided in the context:?\s*',
+        '📋 **Based on Ethiopian Clinical Guidelines:**\n\n',
+        text,
+        flags=re.IGNORECASE
+    )
     
-    lines = text.split("\n")
+    # Split into sentences for better processing
+    # Match section patterns like "Word:" or "Word Word:" followed by content
+    section_pattern = r'([A-Z][a-zA-Z\s]{1,30}):\s+'
+    
+    # Split by section headers while keeping them
+    parts = re.split(section_pattern, text)
+    
     formatted = ""
-    current_section = ""
     
-    for line in lines:
-        line = line.strip()
+    for i in range(len(parts)):
+        part = parts[i].strip()
         
-        if not line:
-            if formatted and not formatted.endswith("\n\n"):
-                formatted += "\n\n"
+        if not part:
             continue
-        
-        # Detect section headers with colons (e.g., "Cause:", "Management:", "Symptoms:")
-        if re.match(r'^[A-Z][a-zA-Z\s]{0,30}:\s*.+', line):
-            parts = line.split(":", 1)
-            header = parts[0].strip()
-            content = parts[1].strip() if len(parts) > 1 else ""
             
-            # Add proper spacing before new section
-            if formatted:
-                formatted += "\n\n"
-            
-            # Format as a bold header with content on same line
-            formatted += f"**{header}:**\n\n{content}"
-            current_section = header
-            
-        # Detect numbered lists (1., 2., etc.)
-        elif re.match(r'^\d+[\.)]\s+', line):
-            formatted += f"\n{line}"
-            
-        # Detect existing bullet points
-        elif re.match(r'^[•\-\*]\s+', line):
-            formatted += f"\n{line}"
-            
-        # Regular text - append naturally
+        # If this looks like a section header (short, capitalized)
+        if i < len(parts) - 1 and len(part.split()) <= 5 and part[0].isupper() and not part.endswith('.'):
+            # This is a header, next part is content
+            formatted += f"\n\n**{part}:**\n\n"
         else:
-            # If we just started a new section, continue on same area
-            if formatted.endswith(current_section):
-                formatted += f" {line}"
-            # If previous line ended with period, question mark, or exclamation, start new line
-            elif formatted and formatted.rstrip().endswith(('.', '?', '!', ':')):
-                formatted += f"\n\n{line}"
-            # Otherwise continue on same line with space
-            elif formatted:
-                formatted += f" {line}"
-            else:
-                formatted += line
+            # This is content
+            formatted += part
     
-    # Clean up formatting
+    # Clean up the result
     formatted = formatted.strip()
     
-    # Fix multiple spaces
-    formatted = re.sub(r' {2,}', ' ', formatted)
+    # Ensure we don't have too many newlines
+    formatted = re.sub(r'\n{4,}', '\n\n', formatted)
     
-    # Ensure consistent spacing (max 2 newlines between sections)
-    formatted = re.sub(r'\n{3,}', '\n\n', formatted)
-    
-    # Add a summary introduction if response starts with "Based on"
-    if formatted.startswith("Based on"):
-        formatted = formatted.replace("Based on the Ethiopian clinical guidelines provided in the context:", 
-                                      "📋 **Based on Ethiopian Clinical Guidelines:**\n\n", 1)
+    # Make sure there's spacing after the intro
+    formatted = re.sub(
+        r'(Based on Ethiopian Clinical Guidelines:\*\*)\s*([A-Z])',
+        r'\1\n\n\2',
+        formatted
+    )
     
     return formatted
 
@@ -135,22 +115,20 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
             except Exception as e:
                 response = f"⚠️ **Error**: Sorry, I encountered an issue while processing your request.\n\n*Details: {str(e)}*"
         
-        # Stream word by word for smoother live effect
-        words = response.split()
-        for i, word in enumerate(words):
-            full_response += word + " "
-            # Update display periodically
-            if i % 3 == 0 or word.endswith(('\n', '.')):
+        # Stream with character-level animation for smoother effect
+        for char in response:
+            full_response += char
+            # Update display at reasonable intervals
+            if char in [' ', '\n', '.', ':', '!', '?'] and len(full_response) % 10 == 0:
                 message_placeholder.markdown(full_response + "▌")
-                time.sleep(0.02)
+                time.sleep(0.01)
         
         # Final render without cursor
-        message_placeholder.markdown(full_response.strip())
+        message_placeholder.markdown(full_response)
     
     # Save message
-    st.session_state.messages.append({"role": "assistant", "content": full_response.strip()})
+    st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 # --- Footer ---
 st.markdown("---")
 st.caption("💡 **TenaAI** © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
-
