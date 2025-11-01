@@ -181,7 +181,7 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 
         # Simulate "typing" effect
         for chunk in response.split():
-            full_response += chunk + " "
+            full_response += chunk + "\n"
             time.sleep(0.03)
             message_placeholder.markdown(full_response + "▌")  # blinking cursor
         message_placeholder.markdown(full_response)
@@ -233,6 +233,7 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 # --- Footer ---
 st.markdown("---")
 st.caption("TenaAI © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+
 
 
 
