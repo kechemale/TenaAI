@@ -115,16 +115,19 @@ class RAGSearch:
         self.llm_model = llm_model
         print(f"[INFO] ✅ DeepSeek LLM initialized with model: {llm_model}")
 
-    def search_and_summarize(self, query: str, top_k: int = 5) -> str:
-        results = self.vectorstore.query(query, top_k=top_k)
-        texts = [r["metadata"].get("text", "") for r in results if r["metadata"]]
-        context = "\n\n".join(texts)
-        if not context:
-            return "⚠️ No relevant documents found."
+def search_and_summarize(self, query: str, top_k: int = 5) -> str:
+    results = self.vectorstore.query(query, top_k=top_k)
+    texts = [r["metadata"].get("text", "") for r in results if r["metadata"]]
+    context = "\n\n".join(texts)
+    
+    if not context:
+        return "⚠️ No relevant documents found. I cannot answer this question without the guidelines."
 
-        prompt = f"""You are a healthcare assistant specialized in Ethiopian medical guidelines.
+    prompt = f"""You are a healthcare assistant specialized in Ethiopian medical guidelines.
 
-Based on the following context, answer the question comprehensively:
+You **must answer ONLY using the context provided below**. 
+If the answer is not contained in the context, respond with:
+'I’m sorry, I cannot answer this question based on the available guidelines.'
 
 Question:
 {query}
@@ -132,24 +135,29 @@ Question:
 Context:
 {context}
 
-Please provide a clear and medically accurate summary directly addressing the query.
+Provide a clear, concise, and medically accurate summary directly addressing the query.
+Do not provide any information not included in the context.
 """
 
-        try:
-            response = self.client.chat.completions.create(
-                model=self.llm_model,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are a helpful assistant that summarizes Ethiopian clinical guidelines accurately."
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.1,  # Deterministic output
-            )
-            return response.choices[0].message.content
-        except Exception as e:
-            return f"❌ Error generating summary: {str(e)}"
+    try:
+        response = self.client.chat.completions.create(
+            model=self.llm_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a strict assistant that only summarizes Ethiopian clinical guidelines. "
+                        "Never provide answers from your own knowledge. "
+                        "If the context does not contain the answer, say you cannot answer."
+                    )
+                },
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.1,  # deterministic
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"❌ Error generating summary: {str(e)}"
 
 
 # Example local usage
@@ -158,3 +166,4 @@ if __name__ == "__main__":
     query = "What are the registration requirements for new and repeat candidates in the EHPLE system?"
     summary = rag_search.search_and_summarize(query, top_k=3)
     print("Summary:", summary)
+
