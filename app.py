@@ -198,40 +198,41 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
     st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 # --- Analytics Sidebar ---
-with st.sidebar:
-    st.subheader("📊 Usage Analytics")
+# with st.sidebar:
+#     st.subheader("📊 Usage Analytics")
     
-    try:
-        if os.path.exists("user_queries.csv"):
-            df = pd.read_csv("user_queries.csv")
+#     try:
+#         if os.path.exists("user_queries.csv"):
+#             df = pd.read_csv("user_queries.csv")
             
-            if not df.empty:
-                st.metric("Total Queries", len(df))
-                st.metric("Your Session ID", st.session_state.session_id)
+#             if not df.empty:
+#                 st.metric("Total Queries", len(df))
+#                 st.metric("Your Session ID", st.session_state.session_id)
                 
-                # Show recent queries from current session
-                session_queries = df[df['session_id'] == st.session_state.session_id]
-                if not session_queries.empty:
-                    st.write("**Your recent queries:**")
-                    for _, row in session_queries.tail(3).iterrows():
-                        st.caption(f"• {row['query'][:40]}...")
+#                 # Show recent queries from current session
+#                 session_queries = df[df['session_id'] == st.session_state.session_id]
+#                 if not session_queries.empty:
+#                     st.write("**Your recent queries:**")
+#                     for _, row in session_queries.tail(3).iterrows():
+#                         st.caption(f"• {row['query'][:40]}...")
                 
-                # Download button for admin (optional)
-                if st.checkbox("Show raw data"):
-                    st.dataframe(df.tail(10))
+#                 # Download button for admin (optional)
+#                 if st.checkbox("Show raw data"):
+#                     st.dataframe(df.tail(10))
                     
-                with st.expander("Download Query Logs"):
-                    st.download_button(
-                        label="Download CSV",
-                        data=df.to_csv(index=False),
-                        file_name=f"tenaai_queries_{datetime.now().strftime('%Y%m%d')}.csv",
-                        mime="text/csv"
-                    )
-    except Exception as e:
-        st.info("No query data yet. Start asking questions!")
+#                 with st.expander("Download Query Logs"):
+#                     st.download_button(
+#                         label="Download CSV",
+#                         data=df.to_csv(index=False),
+#                         file_name=f"tenaai_queries_{datetime.now().strftime('%Y%m%d')}.csv",
+#                         mime="text/csv"
+#                     )
+#     except Exception as e:
+#         st.info("No query data yet. Start asking questions!")
 
 # --- Footer ---
 st.markdown("---")
 st.caption("TenaAI © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+
 
 
