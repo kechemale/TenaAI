@@ -1,3 +1,75 @@
+# To RUN this file directly, uncomment the code below.
+
+# from src.data_loader import load_all_documents
+# from src.vectorstore import FaissVectorStore
+# from src.search import RAGSearch
+
+# # Example usage
+# if __name__ == "__main__":
+    
+#     docs = load_all_documents("data/core_documents_and_guidelines/test")
+#     store = FaissVectorStore("faiss_store")
+#     store.load()
+#     rag_search = RAGSearch()
+#     query = "How can postpartum hemorrhage due to uterine inversion be recognized and managed?"
+#     summary = rag_search.search_and_summarize(query, top_k=3)
+#     print("Summary:", summary)
+
+
+# TO RUN with Streamlit, use the code below. but To RUN this file directly, uncomment the code above
+# import sys
+# import os
+# import streamlit as st
+
+# # Ensure we can import from src/
+# sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+
+# from src.data_loader import load_all_documents
+# from src.vectorstore import FaissVectorStore
+# from src.search import RAGSearch
+
+# # --- Streamlit Page Config ---
+# st.set_page_config(page_title="TenaAI - Healthcare RAG", page_icon="🩺", layout="wide")
+
+# st.title("🩺 TenaAI: RAG Healthcare Assistant")
+# st.write("Empowering Ethiopian healthcare professionals with instant access to clinical guidelines and treatment documents.")
+
+# # --- Initialize RAG System ---
+# @st.cache_resource
+# def init_rag():
+#     """Load FAISS vector store and RAG system once."""
+#     store = FaissVectorStore("faiss_store")
+#     store.load()
+#     rag = RAGSearch()
+#     return rag
+
+# rag_search = init_rag()
+
+# # --- User Query ---
+# query = st.text_area(
+#     "Ask your clinical question:",
+#     placeholder="e.g. How can postpartum hemorrhage due to uterine inversion be recognized and managed?",
+#     height=120
+# )
+
+# top_k = st.slider("Number of relevant sections to retrieve:", 1, 10, 3)
+
+# if st.button("🔍 Search and Summarize"):
+#     if not query.strip():
+#         st.warning("Please enter a question first.")
+#     else:
+#         with st.spinner("Retrieving and summarizing from guidelines..."):
+#             try:
+#                 summary = rag_search.search_and_summarize(query, top_k=top_k)
+#                 st.subheader("🩸 Summary")
+#                 st.markdown(summary)
+#             except Exception as e:
+#                 st.error(f"Error: {str(e)}")
+
+# st.markdown("---")
+# st.caption("TenaAI © 2025 | Retrieval-Augmented Generation system built for Ethiopian healthcare professionals.")
+
+
 
 #Add conversational memory, a chat-style UI, and dynamic streaming responses.
 import sys
