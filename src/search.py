@@ -141,8 +141,6 @@ Context (official Ethiopian healthcare documents):
 {context}
 
 Your response should:
-- Be medically accurate and concise.
-- Use Ethiopian healthcare terminology when possible.
 - If unclear or missing, say: "The Ethiopian clinical guideline does not specify this information."
 """
 
@@ -174,5 +172,6 @@ if __name__ == "__main__":
     query = "What are the registration requirements for new and repeat candidates in the EHPLE system?"
     summary = rag_search.search_and_summarize(query, top_k=3)
     print("Summary:", summary)
+
 
 
