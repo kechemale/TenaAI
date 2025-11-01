@@ -37,74 +37,76 @@ if "messages" not in st.session_state:
 # --- Function to Format LLM Response ---
 def format_clinical_response(text: str) -> str:
     """
-    Formats medical text with proper structure, headers, and bullet points.
-    Handles sections, numbered lists, and improves overall readability.
+    Formats medical text with proper structure for natural readability.
+    Creates clear sections with headers and organized content.
     """
     # Remove excessive whitespace
     text = re.sub(r'\n{3,}', '\n\n', text.strip())
     
+    # Remove leading bullets that might already exist
+    text = re.sub(r'^\s*[•\-\*]\s+', '', text, flags=re.MULTILINE)
+    
     lines = text.split("\n")
     formatted = ""
-    in_list = False
+    current_section = ""
     
-    for i, line in enumerate(lines):
+    for line in lines:
         line = line.strip()
         
-        # Skip empty lines but preserve paragraph breaks
         if not line:
             if formatted and not formatted.endswith("\n\n"):
-                formatted += "\n"
-            in_list = False
+                formatted += "\n\n"
             continue
         
-        # Detect section headers (e.g., "Diagnosis:", "Treatment:", "Symptoms:")
-        if re.match(r'^[A-Z][a-zA-Z\s]{0,30}:', line):
+        # Detect section headers with colons (e.g., "Cause:", "Management:", "Symptoms:")
+        if re.match(r'^[A-Z][a-zA-Z\s]{0,30}:\s*.+', line):
             parts = line.split(":", 1)
             header = parts[0].strip()
             content = parts[1].strip() if len(parts) > 1 else ""
             
-            # Add spacing before new section
-            if formatted and not formatted.endswith("\n\n"):
+            # Add proper spacing before new section
+            if formatted:
                 formatted += "\n\n"
             
-            formatted += f"### {header}\n"
-            if content:
-                formatted += f"{content}\n"
-            in_list = False
+            # Format as a bold header with content on same line
+            formatted += f"**{header}:**\n\n{content}"
+            current_section = header
             
         # Detect numbered lists (1., 2., etc.)
-        elif re.match(r'^\d+\.', line):
-            formatted += f"{line}\n"
-            in_list = True
+        elif re.match(r'^\d+[\.)]\s+', line):
+            formatted += f"\n{line}"
             
-        # Detect bullet points (-, *, •)
-        elif re.match(r'^[-*•]\s', line):
-            formatted += f"{line}\n"
-            in_list = True
+        # Detect existing bullet points
+        elif re.match(r'^[•\-\*]\s+', line):
+            formatted += f"\n{line}"
             
-        # Regular paragraph text
+        # Regular text - append naturally
         else:
-            # If previous content was a list, add spacing
-            if in_list and formatted:
-                formatted += "\n"
-                in_list = False
-            
-            # Check if this looks like a continuation of previous line
-            if formatted and not formatted.endswith("\n\n") and not formatted.endswith(":\n"):
-                # Don't add bullet if it's a continuation
-                formatted += f"{line}\n"
+            # If we just started a new section, continue on same area
+            if formatted.endswith(current_section):
+                formatted += f" {line}"
+            # If previous line ended with period, question mark, or exclamation, start new line
+            elif formatted and formatted.rstrip().endswith(('.', '?', '!', ':')):
+                formatted += f"\n\n{line}"
+            # Otherwise continue on same line with space
+            elif formatted:
+                formatted += f" {line}"
             else:
-                # Add as bullet point for standalone statements
-                if not line.endswith(":"):
-                    formatted += f"• {line}\n"
-                else:
-                    formatted += f"{line}\n"
+                formatted += line
     
-    # Clean up any trailing whitespace
+    # Clean up formatting
     formatted = formatted.strip()
     
-    # Ensure proper spacing between sections
+    # Fix multiple spaces
+    formatted = re.sub(r' {2,}', ' ', formatted)
+    
+    # Ensure consistent spacing (max 2 newlines between sections)
     formatted = re.sub(r'\n{3,}', '\n\n', formatted)
+    
+    # Add a summary introduction if response starts with "Based on"
+    if formatted.startswith("Based on"):
+        formatted = formatted.replace("Based on the Ethiopian clinical guidelines provided in the context:", 
+                                      "📋 **Based on Ethiopian Clinical Guidelines:**\n\n", 1)
     
     return formatted
 
@@ -137,10 +139,10 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
         words = response.split()
         for i, word in enumerate(words):
             full_response += word + " "
-            # Update more frequently at paragraph breaks
-            if word.endswith(("\n", ".", ":", "?", "!")) or i % 5 == 0:
+            # Update display periodically
+            if i % 3 == 0 or word.endswith(('\n', '.')):
                 message_placeholder.markdown(full_response + "▌")
-                time.sleep(0.03)
+                time.sleep(0.02)
         
         # Final render without cursor
         message_placeholder.markdown(full_response.strip())
@@ -151,3 +153,4 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 # --- Footer ---
 st.markdown("---")
 st.caption("💡 **TenaAI** © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+```
