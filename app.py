@@ -153,4 +153,4 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 # --- Footer ---
 st.markdown("---")
 st.caption("💡 **TenaAI** © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
-```
+
