@@ -194,7 +194,7 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
             # Update display at reasonable intervals
             if char in [' ', '\n', '.', ':', '!', '?'] and len(full_response) % 10 == 0:
                 message_placeholder.markdown(full_response + "▌")
-                time.sleep(0.01)
+                time.sleep(0.08)
         
         # Final render without cursor
         message_placeholder.markdown(full_response)
@@ -205,3 +205,4 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 # --- Footer ---
 st.markdown("---")
 st.caption("💡 **TenaAI** © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+
