@@ -82,7 +82,6 @@ from openai import OpenAI
 load_dotenv()
 
 class RAGSearch:
-    
     def __init__(
         self,
         persist_dir: str = "faiss_store",
@@ -120,30 +119,21 @@ class RAGSearch:
         results = self.vectorstore.query(query, top_k=top_k)
         texts = [r["metadata"].get("text", "") for r in results if r["metadata"]]
         context = "\n\n".join(texts)
+        if not context:
+            return "⚠️ No relevant documents found."
 
-        # If no relevant context found
-        if not context.strip():
-            return (
-                "⚠️ No relevant Ethiopian healthcare document found in the database for your query.\n\n"
-                "The assistant is restricted to answer **only** from the official Ethiopian clinical guidelines, "
-                "and cannot generate answers from general knowledge. Please rephrase or try another clinical topic."
-            )
+        prompt = f"""You are a healthcare assistant specialized in Ethiopian medical guidelines.
 
-        # Construct the RAG-grounded prompt
-        prompt = f"""
-    You are a healthcare assistant specialized in Ethiopian clinical and public health guidelines.
-    Answer the question **only** using the provided context below. 
-    If the information is not clearly available, explicitly say so — do not generate or guess an answer.
+Based on the following context, answer the question comprehensively:
 
-    Question:
-    {query}
+Question:
+{query}
 
-    Context (official Ethiopian healthcare documents):
-    {context}
+Context:
+{context}
 
-    Your response should:
-    - If unclear or missing, say: "The Ethiopian clinical guideline does not specify this information."
-    """
+Please provide a clear and medically accurate summary directly addressing the query.
+"""
 
         try:
             response = self.client.chat.completions.create(
@@ -151,20 +141,15 @@ class RAGSearch:
                 messages=[
                     {
                         "role": "system",
-                        "content": (
-                            "You are a cautious healthcare assistant that responds strictly based on Ethiopian "
-                            "clinical guidelines and NEVER uses general knowledge or external data. "
-                            "If context is missing or incomplete, clearly state that."
-                        ),
+                        "content": "You are a helpful assistant that summarizes Ethiopian clinical guidelines accurately."
                     },
                     {"role": "user", "content": prompt},
                 ],
-                temperature=0.1,  # deterministic output
+                temperature=0.1,  # Deterministic output
             )
-            return response.choices[0].message.content.strip()
+            return response.choices[0].message.content
         except Exception as e:
             return f"❌ Error generating summary: {str(e)}"
-
 
 
 # Example local usage
@@ -173,7 +158,3 @@ if __name__ == "__main__":
     query = "What are the registration requirements for new and repeat candidates in the EHPLE system?"
     summary = rag_search.search_and_summarize(query, top_k=3)
     print("Summary:", summary)
-
-
-
-
