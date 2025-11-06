@@ -325,7 +325,59 @@ from src.vectorstore import FaissVectorStore
 from openai import OpenAI
 
 load_dotenv()
+def _append_eval_to_gsheet(
+        query: str,
+        top_k: int,
+        contexts: list,
+        response: str,
+        sheet_name: str = "TenaAI_Logs"
+    ):
+        """
+        Appends query, context, and response data to a Google Sheet.
 
+        Args:
+            query (str): User query.
+            top_k (int): Number of retrieved contexts.
+            contexts (list): Contexts or retrieved passages.
+            response (str): Model response.
+            sheet_name (str): Google Sheet name.
+        """
+        row = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "query": query,
+            "top_k": top_k,
+            "contexts": json.dumps(contexts, ensure_ascii=False),
+            "response": response,
+        }
+
+        try:
+            # Google Sheets authentication
+            scopes = [
+                "https://www.googleapis.com/auth/spreadsheets",
+                "https://www.googleapis.com/auth/drive"
+            ]
+            creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes)
+            client = gspread.authorize(creds)
+
+            # Open the sheet
+            sheet = client.open(sheet_name).sheet1  # first tab
+
+            # Append the row
+            sheet.append_row(
+                [
+                    row["timestamp"],
+                    row["query"],
+                    row["top_k"],
+                    row["contexts"],
+                    row["response"]
+                ],
+                value_input_option="USER_ENTERED"
+            )
+            print(f"✅ Appended row to Google Sheet '{sheet_name}' successfully.")
+
+        except Exception as e:
+            print(f"⚠️ Failed to append to Google Sheet '{sheet_name}': {e}")
+                
 class RAGSearch:
     def __init__(
         self,
