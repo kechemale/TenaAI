@@ -1,4 +1,4 @@
-# TenaAI: RAG Healthcare System
+# RedatHakim: AI Healthcare System
 
 A Retrieval-Augmented Generation system for intelligent search and summarization of healthcare documents in Ethiopia for healthcare professionals.
 
@@ -37,3 +37,4 @@ AI Summarization - DeepSeek LLM for accurate summaries
 Healthcare Focus - Optimized for medical documents
 
 Formats - PDF, You can also extend to Word, Text, CSV support
+
