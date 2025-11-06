@@ -302,6 +302,7 @@
 #     print("Summary:", summary)
 
 
+
 import sys
 import os
 from pathlib import Path
@@ -412,79 +413,71 @@ class RAGSearch:
         )
         self.llm_model = llm_model
         print(f"[INFO] ✅ DeepSeek LLM initialized with model: {llm_model}")
-
-
+    
     def search_and_summarize(
-            
-            self,
-            query: str,
-            top_k: int = 5,
-            save_path: str | None = None,
-            return_contexts: bool = False  # NEW ARGUMENT
-        ) -> str | tuple[str, list]:
-            results = self.vectorstore.query(query, top_k=top_k)
-            texts = [r["metadata"].get("text", "") for r in results if r.get("metadata")]
-            
-            # capture simple provenance for evaluation/logging
-            contexts_meta = []
-            for r in results:
-                meta = r.get("metadata") or {}
-                contexts_meta.append({
-                    "source": meta.get("source") or meta.get("doc_id") or None,
-                    "text": meta.get("text", "")[:1000]  # trim for CSV/Sheets if desired
-                })
-            
-            context = "\n\n".join(texts)
-            if not context:
-                answer = "⚠️ No relevant documents found."
-                if return_contexts:
-                    return answer, contexts_meta
-                return answer
+        self,
+        query: str,
+        top_k: int = 5,
+        save_path: str | None = None,
+        return_contexts: bool = False  # optional
+) -> str | tuple[str, list]:
+        results = self.vectorstore.query(query, top_k=top_k)
+        texts = [r["metadata"].get("text", "") for r in results if r.get("metadata")]
+        #   Capture document IDs for evaluation/logging
+        contexts_meta = []
+        for r in results:
+            meta = r.get("metadata") or {}
+            contexts_meta.append({
+                "source": meta.get("source") or meta.get("doc_id") or None,
+                "text": meta.get("text", "")[:1000]  # trim for CSV/Sheets if desired
+        })
 
-            prompt = f"""You are a healthcare assistant specialized in Ethiopian medical guidelines.
-
-        Based on the following context, answer the question comprehensively:
-
-        Question:
-        {query}
-
-        Context:
-        {context}
-
-        Please provide a clear and medically accurate summary directly addressing the query.
-        """
-
-            try:
-                response = self.client.chat.completions.create(
-                    model=self.llm_model,
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": "You are a helpful assistant that summarizes Ethiopian clinical guidelines accurately."
-                        },
-                        {"role": "user", "content": prompt},
-                    ],
-                    temperature=0.1,
-                )
-                answer = response.choices[0].message.content
-            except Exception as e:
-                answer = f"❌ Error generating summary: {str(e)}"
-
-            # save evaluation row if requested
-            if save_path is None:
-                csv_target = self.eval_log_default
-            else:
-                csv_target = Path(save_path)
-
-            try:
-                self._append_eval_csv(csv_target, query, top_k, contexts_meta, answer)
-            except Exception as e:
-                print(f"[WARN] Failed to write eval CSV: {e}")
-
+        context = "\n\n".join(texts)
+        if not context:
+            answer = "⚠️ No relevant documents found."
             if return_contexts:
                 return answer, contexts_meta
             return answer
 
+        prompt = f"""You are a healthcare assistant specialized in Ethiopian medical guidelines.
+
+    Based on the following context, answer the question comprehensively:
+
+    Question:
+    {query}
+
+    Context:
+    {context}
+
+    Please provide a clear and medically accurate summary directly addressing the query.
+    """
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.llm_model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful assistant that summarizes Ethiopian clinical guidelines accurately."
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.1,
+            )
+            answer = response.choices[0].message.content
+        except Exception as e:
+            answer = f"❌ Error generating summary: {str(e)}"
+
+        # save evaluation row if requested
+        csv_target = Path(save_path) if save_path else self.eval_log_default
+        try:
+            self._append_eval_csv(csv_target, query, top_k, contexts_meta, answer)
+        except Exception as e:
+            print(f"[WARN] Failed to write eval CSV: {e}")
+
+        if return_contexts:
+            return answer, contexts_meta
+        return answer
 # Example local usage
 if __name__ == "__main__":
     rag_search = RAGSearch()
