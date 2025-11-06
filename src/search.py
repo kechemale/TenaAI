@@ -361,30 +361,23 @@ class RAGSearch:
         self.llm_model = llm_model
         print(f"[INFO] ✅ DeepSeek LLM initialized with model: {llm_model}")
 
-    def _append_eval_csv_to_gsheet(
-        csv_path: Path,
+    def _append_eval_to_gsheet(
         query: str,
         top_k: int,
         contexts: list,
         response: str,
-        service_account_path: str,
         sheet_name: str = "TenaAI_Logs"
     ):
         """
-        Appends query, context, and response data both to a local CSV and Google Sheet.
+        Appends query, context, and response data to a Google Sheet.
 
         Args:
-            csv_path (Path): Local CSV path for backup.
             query (str): User query.
             top_k (int): Number of retrieved contexts.
             contexts (list): Contexts or retrieved passages.
             response (str): Model response.
-            service_account_path (str): Path to Google service account JSON key.
             sheet_name (str): Google Sheet name.
         """
-        # ---------- Write to local CSV ----------
-        csv_path.parent.mkdir(parents=True, exist_ok=True)
-        header = ["timestamp", "query", "top_k", "contexts", "response"]
         row = {
             "timestamp": datetime.utcnow().isoformat(),
             "query": query,
@@ -393,32 +386,31 @@ class RAGSearch:
             "response": response,
         }
 
-        write_header = not csv_path.exists()
-        with csv_path.open("a", encoding="utf-8", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=header)
-            if write_header:
-                writer.writeheader()
-            writer.writerow(row)
-
-        # ---------- Append to Google Sheet ----------
         try:
+            # Google Sheets authentication
             scopes = [
                 "https://www.googleapis.com/auth/spreadsheets",
                 "https://www.googleapis.com/auth/drive"
             ]
             creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes)
-
-
             client = gspread.authorize(creds)
-            sheet = client.open(sheet_name).sheet1
 
-            sheet.append_row([
-                row["timestamp"],
-                row["query"],
-                row["top_k"],
-                row["contexts"],
-                row["response"]
-            ])
+            # Open the sheet
+            sheet = client.open(sheet_name).sheet1  # first tab
+
+            # Append the row
+            sheet.append_row(
+                [
+                    row["timestamp"],
+                    row["query"],
+                    row["top_k"],
+                    row["contexts"],
+                    row["response"]
+                ],
+                value_input_option="USER_ENTERED"
+            )
+            print(f"✅ Appended row to Google Sheet '{sheet_name}' successfully.")
+
         except Exception as e:
             print(f"⚠️ Failed to append to Google Sheet '{sheet_name}': {e}")
 
@@ -484,3 +476,4 @@ if __name__ == "__main__":
     query = "What are the registration requirements for new and repeat candidates in the EHPLE system?"
     summary = rag_search.search_and_summarize(query, top_k=3)
     print("Summary:", summary)
+
