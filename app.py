@@ -83,10 +83,10 @@ from src.vectorstore import FaissVectorStore
 from src.search import RAGSearch
 
 # --- Streamlit Page Config ---
-st.set_page_config(page_title="TenaAI - Healthcare Chat", page_icon="🩺", layout="wide")
+st.set_page_config(page_title="TenaAI - Healthcare Clinician Assistant", page_icon="🩺", layout="wide")
 
 # --- Title and Description ---
-st.title("🩺 TenaAI: Doctor Assistant")
+st.title("🩺 TenaAI: Clinician Assistant")
 st.write("Ask clinical questions and get AI-generated answers from Ethiopian healthcare guidelines and official documents.")
 
 # --- Initialize RAG System ---
@@ -205,4 +205,5 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 # --- Footer ---
 st.markdown("---")
 st.caption("💡 **TenaAI** © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+
 
