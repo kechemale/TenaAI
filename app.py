@@ -86,7 +86,7 @@ from src.search import RAGSearch
 st.set_page_config(page_title="TenaAI - Healthcare Chat", page_icon="🩺", layout="wide")
 
 # --- Title and Description ---
-st.title("🩺 TenaAI: Healthcare RAG Chat Assistant")
+st.title("🩺 TenaAI: Doctor Assistant")
 st.write("Ask clinical questions and get AI-generated answers from Ethiopian healthcare guidelines and official documents.")
 
 # --- Initialize RAG System ---
@@ -205,3 +205,4 @@ if prompt := st.chat_input("Ask a healthcare-related question..."):
 # --- Footer ---
 st.markdown("---")
 st.caption("💡 **TenaAI** © 2025 | AI-powered Retrieval-Augmented Generation System for Ethiopian Healthcare Professionals.")
+
