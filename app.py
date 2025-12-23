@@ -186,6 +186,26 @@ def _log_path() -> str:
     return os.path.join(_LOG_DIR, f"rag_chat_{day}.jsonl")
 
 
+def _read_log_text(*, session_id: Optional[str] = None) -> str:
+    path = _log_path()
+    if not os.path.exists(path):
+        return ""
+    try:
+        if not session_id:
+            with open(path, "r", encoding="utf-8") as f:
+                return f.read()
+
+        # Filter to only this Streamlit session's entries.
+        lines: list[str] = []
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                if session_id in line:
+                    lines.append(line)
+        return "".join(lines)
+    except Exception:
+        return ""
+
+
 def _json_safe(value):
     # Convert common non-serializable values (numpy scalars, bytes, etc.)
     # without adding a hard dependency on numpy.
@@ -223,6 +243,32 @@ def _append_jsonl(record: dict) -> None:
         # Logging must never break the user experience.
         print("[WARN] Failed to write JSONL log")
         print(traceback.format_exc())
+
+
+# --- Manual log download (kept out of git via .gitignore) ---
+with st.sidebar:
+    st.markdown("### Logs")
+    sid = _ensure_session_id()
+
+    session_log_text = _read_log_text(session_id=sid)
+    if session_log_text:
+        st.download_button(
+            label="Download my session log (today)",
+            data=session_log_text.encode("utf-8"),
+            file_name=f"rag_chat_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}_session_{sid}.jsonl",
+            mime="application/jsonl",
+        )
+    else:
+        st.caption("No session logs yet for today.")
+
+    full_log_text = _read_log_text(session_id=None)
+    if full_log_text:
+        st.download_button(
+            label="Download full log (today)",
+            data=full_log_text.encode("utf-8"),
+            file_name=f"rag_chat_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.jsonl",
+            mime="application/jsonl",
+        )
 
 
 def _friendly_rag_failure_message() -> str:
