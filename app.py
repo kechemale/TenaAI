@@ -245,30 +245,53 @@ def _append_jsonl(record: dict) -> None:
         print(traceback.format_exc())
 
 
-# --- Manual log download (kept out of git via .gitignore) ---
+def _get_secret(key: str) -> Optional[str]:
+    """Best-effort secret lookup (works locally and on Streamlit Cloud)."""
+    try:
+        getter = getattr(st.secrets, "get", None)
+        if callable(getter):
+            return getter(key)
+        return st.secrets[key]
+    except Exception:
+        try:
+            return st.secrets[key]
+        except Exception:
+            return None
+
+
+# --- Manual log download (admin-only; kept out of git via .gitignore) ---
 with st.sidebar:
-    st.markdown("### Logs")
-    sid = _ensure_session_id()
-
-    session_log_text = _read_log_text(session_id=sid)
-    if session_log_text:
-        st.download_button(
-            label="Download my session log (today)",
-            data=session_log_text.encode("utf-8"),
-            file_name=f"rag_chat_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}_session_{sid}.jsonl",
-            mime="application/jsonl",
-        )
+    st.markdown("### Admin")
+    admin_password = _get_secret("ADMIN_PASSWORD")
+    if not admin_password:
+        st.caption("Admin tools disabled (missing secret: ADMIN_PASSWORD).")
     else:
-        st.caption("No session logs yet for today.")
+        entered = st.text_input("Admin password", type="password", key="admin_password")
+        if entered == admin_password:
+            st.markdown("### Logs")
+            sid = _ensure_session_id()
 
-    full_log_text = _read_log_text(session_id=None)
-    if full_log_text:
-        st.download_button(
-            label="Download full log (today)",
-            data=full_log_text.encode("utf-8"),
-            file_name=f"rag_chat_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.jsonl",
-            mime="application/jsonl",
-        )
+            session_log_text = _read_log_text(session_id=sid)
+            if session_log_text:
+                st.download_button(
+                    label="Download my session log (today)",
+                    data=session_log_text.encode("utf-8"),
+                    file_name=f"rag_chat_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}_session_{sid}.jsonl",
+                    mime="application/jsonl",
+                )
+            else:
+                st.caption("No session logs yet for today.")
+
+            full_log_text = _read_log_text(session_id=None)
+            if full_log_text:
+                st.download_button(
+                    label="Download full log (today)",
+                    data=full_log_text.encode("utf-8"),
+                    file_name=f"rag_chat_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.jsonl",
+                    mime="application/jsonl",
+                )
+        else:
+            st.caption("Enter the admin password to access log downloads.")
 
 
 def _friendly_rag_failure_message() -> str:
