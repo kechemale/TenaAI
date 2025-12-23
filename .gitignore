@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.pyo
+
+.streamlit/
+logs/
+
+# Local vector index artifacts
+faiss_store/
+
+# Common OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
