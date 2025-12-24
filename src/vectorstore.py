@@ -23,17 +23,7 @@ class FaissVectorStore:
         emb_pipe = EmbeddingPipeline(model_name=self.embedding_model, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
         chunks = emb_pipe.chunk_documents(documents)
         embeddings = emb_pipe.embed_chunks(chunks)
-        # Preserve upstream metadata (e.g., PDF source path and page number) so we can
-        # cite chapter/page in answers.
-        metadatas = []
-        for chunk in chunks:
-            meta = {}
-            try:
-                meta = dict(getattr(chunk, "metadata", {}) or {})
-            except Exception:
-                meta = {}
-            meta["text"] = getattr(chunk, "page_content", "")
-            metadatas.append(meta)
+        metadatas = [{"text": chunk.page_content} for chunk in chunks]
         self.add_embeddings(np.array(embeddings).astype('float32'), metadatas)
         self.save()
         print(f"[INFO] Vector store built and saved to {self.persist_dir}")
