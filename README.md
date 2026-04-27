@@ -32,7 +32,7 @@ print(summary)
 Features
 Smart Document Search - FAISS-powered vector search
 
-AI Summarization - DeepSeek LLM for accurate summaries
+AI Summarization - DeepSeek LLM for accurate summaries. You can also use other models.
 
 Healthcare Focus - Optimized for medical documents
 
